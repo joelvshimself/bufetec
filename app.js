@@ -24,6 +24,8 @@ app.use(express.json());
   }
 })();
 
+
+
 // Rutas para Usuarios
 app.post('/usuarios', async (req, res) => {
   try {
@@ -34,6 +36,11 @@ app.post('/usuarios', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Ruta de Health Check
+app.get('/health', (req, res) => {
+    res.status(200).json({ mensaje: 'todo bien humano' });
+  });
 
 app.get('/usuarios', async (req, res) => {
   try {
