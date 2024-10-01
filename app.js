@@ -122,7 +122,13 @@ app.delete('/usuarios/:id', async (req, res) => {
 // Ruta para editar el permiso de un usuario
 app.patch('/usuarios/:id/permiso', async (req, res) => {
   const { id } = req.params;
-  
+  const { permiso } = req.body;
+
+  // Validar que el permiso sea un número entero
+  if (!Number.isInteger(permiso)) {
+    return res.status(400).json({ message: 'Permiso debe ser un número entero' });
+  }
+
   try {
     const usuario = await Usuario.findByPk(id);
 
@@ -130,8 +136,8 @@ app.patch('/usuarios/:id/permiso', async (req, res) => {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    // Alternar el permiso de 1 a 2 y viceversa
-    usuario.Permisos = usuario.Permisos === 1 ? 2 : 1;
+    // Actualizar el permiso del usuario
+    usuario.Permisos = permiso;
 
     await usuario.save();
     res.json({ message: 'Permiso actualizado correctamente', usuario });
