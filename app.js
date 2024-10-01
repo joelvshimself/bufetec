@@ -1,6 +1,8 @@
 // app.js
 require('dotenv').config();
 const express = require('express');
+const bcrypt = require('bcrypt');
+
 const { sequelize, Usuario, Caso, Asignacion } = require('./db');
 
 const app = express();
@@ -34,6 +36,34 @@ app.post('/usuarios', async (req, res) => {
   } catch (error) {
     console.error('Error al crear usuario:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Ruta para autenticación
+app.post('/login', async (req, res) => {
+  const { Correo, Password } = req.body;
+
+  try {
+    // Buscar usuario por correo
+    const usuario = await Usuario.findOne({ where: { Correo } });
+
+    // Verificar si el usuario existe
+    if (!usuario) {
+      return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+    }
+
+    // Comparar la contraseña proporcionada con la almacenada en la base de datos
+    const esValida = await bcrypt.compare(Password, usuario.Password);
+
+    // Retornar un booleano
+    if (esValida) {
+      res.json({ success: true, message: 'Autenticación exitosa' });
+    } else {
+      res.status(401).json({ success: false, message: 'Contraseña incorrecta' });
+    }
+  } catch (error) {
+    console.error('Error durante la autenticación:', error);
+    res.status(500).json({ success: false, message: 'Error en el servidor' });
   }
 });
 
