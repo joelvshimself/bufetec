@@ -1,5 +1,5 @@
-// models/Usuario.js
 const { DataTypes } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 module.exports = (sequelize) => {
   const Usuario = sequelize.define('Usuario', {
@@ -32,9 +32,20 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       defaultValue: null,
     },
+    // New password field
+    Password: {
+      type: DataTypes.STRING(60), // Set a maximum length of 60 for bcrypt hash
+      allowNull: false,
+    },
   }, {
     tableName: 'Usuarios',
     timestamps: false,
+    hooks: {
+      beforeCreate: async (usuario) => {
+        const salt = await bcrypt.genSalt(10);
+        usuario.Password = await bcrypt.hash(usuario.Password, salt);
+      },
+    },
   });
 
   return Usuario;
