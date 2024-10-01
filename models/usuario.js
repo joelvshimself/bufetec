@@ -1,6 +1,5 @@
 // models/Usuario.js
 const { DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
 
 module.exports = (sequelize) => {
   const Usuario = sequelize.define('Usuario', {
@@ -18,14 +17,6 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     Correo: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-      unique: true,
-      validate: {
-        isEmail: true,
-      },
-    },
-    Contrasena: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
