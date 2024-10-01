@@ -44,18 +44,7 @@ module.exports = (sequelize) => {
   }, {
     tableName: 'Usuarios',
     timestamps: false,
-    hooks: {
-      beforeCreate: async (usuario) => {
-        const salt = await bcrypt.genSalt(10);
-        usuario.Contrasena = await bcrypt.hash(usuario.Contrasena, salt);
-      },
-    },
   });
-
-  // Método para validar la contraseña
-  Usuario.prototype.validarContrasena = async function (contrasena) {
-    return await bcrypt.compare(contrasena, this.Contrasena);
-  };
 
   return Usuario;
 };
