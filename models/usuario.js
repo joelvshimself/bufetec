@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
       },
     },
     Contrasena: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(50),
       allowNull: false,
     },
     Permisos: {
