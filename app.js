@@ -100,6 +100,50 @@ app.get('/casos', async (req, res) => {
   }
 });
 
+// Ruta para borrar un usuario
+app.delete('/usuarios/:id', async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    await usuario.destroy();
+    res.json({ message: 'Usuario eliminado exitosamente' });
+  } catch (error) {
+    console.error('Error al borrar usuario:', error);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+});
+
+// Ruta para editar el permiso de un usuario
+app.patch('/usuarios/:id/permiso', async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Alternar el permiso de 1 a 2 y viceversa
+    usuario.Permisos = usuario.Permisos === 1 ? 2 : 1;
+
+    await usuario.save();
+    res.json({ message: 'Permiso actualizado correctamente', usuario });
+  } catch (error) {
+    console.error('Error al actualizar permiso:', error);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+});
+
+
+
+
 // Rutas para Asignaciones
 app.post('/asignaciones', async (req, res) => {
   try {
