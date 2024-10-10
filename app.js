@@ -122,12 +122,12 @@ app.delete('/usuarios/:id', async (req, res) => {
 });
 
 // Ruta para editar el permiso de un usuario
-app.put('/api/usuarios/:id/permiso', async (req, res) => {
+app.put('/api/usuarios/:id/permisos', async (req, res) => {
   const { id } = req.params;
-  const { permiso } = req.body;
+  const { permisos } = req.body;
 
   // Validar que el permiso sea un número entero
-  if (!Number.isInteger(permiso)) {
+  if (!Number.isInteger(permisos)) {
     return res.status(400).json({ message: 'Permiso debe ser un número entero' });
   }
 
@@ -140,7 +140,7 @@ app.put('/api/usuarios/:id/permiso', async (req, res) => {
     }
 
     // Actualizar el permiso del usuario
-    usuario.permiso = permiso; // Asumiendo que el campo en la base de datos se llama 'permiso'
+    usuario.permisos = permisos; // Asumiendo que el campo en la base de datos se llama 'permiso'
 
     await usuario.save();
     res.json({ message: 'Permiso actualizado correctamente', usuario });
