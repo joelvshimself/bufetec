@@ -2,10 +2,12 @@
 require('dotenv').config();
 const express = require('express');
 const bcrypt = require('bcrypt');
+const cors = require('cors');
+const app = express();
+app.use(cors());
 
 const { sequelize, Usuario, Caso, Asignacion } = require('./db');
 
-const app = express();
 const port = process.env.PORT || 3000;
 app.use(express.json());
 
@@ -120,7 +122,7 @@ app.delete('/usuarios/:id', async (req, res) => {
 });
 
 // Ruta para editar el permiso de un usuario
-app.patch('/usuarios/:id/permiso', async (req, res) => {
+app.put('/api/usuarios/:id/permiso', async (req, res) => {
   const { id } = req.params;
   const { permiso } = req.body;
 
@@ -130,6 +132,7 @@ app.patch('/usuarios/:id/permiso', async (req, res) => {
   }
 
   try {
+    // Buscar al usuario por su ID en la base de datos
     const usuario = await Usuario.findByPk(id);
 
     if (!usuario) {
@@ -137,7 +140,7 @@ app.patch('/usuarios/:id/permiso', async (req, res) => {
     }
 
     // Actualizar el permiso del usuario
-    usuario.Permisos = permiso;
+    usuario.permiso = permiso; // Asumiendo que el campo en la base de datos se llama 'permiso'
 
     await usuario.save();
     res.json({ message: 'Permiso actualizado correctamente', usuario });
@@ -146,6 +149,7 @@ app.patch('/usuarios/:id/permiso', async (req, res) => {
     res.status(500).json({ message: 'Error en el servidor' });
   }
 });
+
 
 
 
