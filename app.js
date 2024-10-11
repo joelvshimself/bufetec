@@ -29,8 +29,6 @@ app.use(express.json());
   }
 })();
 
-
-
 // Rutas para Usuarios
 app.post('/usuarios', async (req, res) => {
   try {
@@ -79,6 +77,16 @@ app.get('/usuarios', async (req, res) => {
   try {
     const usuarios = await Usuario.findAll();
     res.json(usuarios);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//Ruta Para Abogados
+app.get('/usuarios/permisos/2', async (req, res) => {
+  try {
+    const usuariosConPermiso2 = await Usuario.findAll({ where: { Permisos: 2 } });
+    res.json(usuariosConPermiso2);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
