@@ -17,7 +17,6 @@ const sequelize = new Sequelize(process.env.DB_URL, {
 const Usuario = require('./models/usuario')(sequelize);
 const Caso = require('./models/caso')(sequelize);
 const Asignacion = require('./models/asignacion')(sequelize);
-const Mensaje = require('./models/mensaje')(sequelize);
 
 // Establecer asociaciones
 Usuario.hasMany(Caso, { foreignKey: 'Usuario_id' });
@@ -34,16 +33,9 @@ Caso.belongsToMany(Usuario, {
   otherKey: 'Usuario_id',
 });
 
-// Relaciones entre Usuario y Mensaje
-Usuario.hasMany(Mensaje, { foreignKey: 'Remitente_id' });
-Usuario.hasMany(Mensaje, { foreignKey: 'Destinatario_id' });
-Mensaje.belongsTo(Usuario, { foreignKey: 'Remitente_id', as: 'Remitente' });
-Mensaje.belongsTo(Usuario, { foreignKey: 'Destinatario_id', as: 'Destinatario' });
-
 module.exports = {
   sequelize,
   Usuario,
   Caso,
   Asignacion,
-  Mensaje,
 };
