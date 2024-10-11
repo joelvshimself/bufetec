@@ -21,7 +21,7 @@ app.use(express.json());
 
     // Mantenemos app.listen aquí
     app.listen(port, () => {
-      console.log('Aplicación escuchando en http://localhost:${port}');
+      console.log(`Aplicación escuchando en http://localhost:${port}`);
 
     });
   } catch (error) {
