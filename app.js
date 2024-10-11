@@ -93,12 +93,64 @@ app.post('/casos', async (req, res) => {
   }
 });
 
+//Crear una caso en base al email del usuario y al estatus
+app.post('/casos/:email', async (req, res) => {
+  const { email } = req.params;
+  const { Status } = req.body; // Asegúrate de que 'Status' viene en el cuerpo de la solicitud
+
+  try {
+    // Buscar el usuario por correo electrónico
+    const usuario = await Usuario.findOne({ where: { Correo: email } });
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Crear un nuevo caso asociado al usuario
+    const nuevoCaso = await Caso.create({
+      Usuario_id: usuario.Usuario_id,
+      Status, // Asegúrate de que 'Status' es un campo válido en el modelo
+    });
+
+    res.status(201).json(nuevoCaso);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+
+
+
 app.get('/casos', async (req, res) => {
   try {
     const casos = await Caso.findAll({ include: Usuario });
     res.json(casos);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Ruta PUT para actualizar el Status de un Caso y establecerlo en 1
+app.put('/casos/:id', async (req, res) => {
+  const { id } = req.params; // Obtenemos el Caso_id de los parámetros de la URL
+
+  try {
+    // Buscamos el caso por su ID
+    const caso = await Caso.findByPk(id);
+
+    if (!caso) {
+      return res.status(404).json({ message: 'Caso no encontrado' });
+    }
+
+    // Establecemos el Status en 1
+    caso.Status = 1;
+
+    // Guardamos los cambios en la base de datos
+    await caso.save();
+
+    // Devolvemos el caso actualizado
+    res.status(200).json(caso);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 });
 
