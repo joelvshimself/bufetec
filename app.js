@@ -6,7 +6,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
-const { sequelize, Usuario, Caso, Asignacion } = require('./db');
+const { sequelize, Usuario, Caso, Asignacion, Mensaje } = require('./db');
 
 const port = process.env.PORT || 3000;
 app.use(express.json());
@@ -152,8 +152,6 @@ app.put('/api/usuarios/:id/permisos', async (req, res) => {
 
 
 
-
-
 // Rutas para Asignaciones
 app.post('/asignaciones', async (req, res) => {
   try {
@@ -171,6 +169,49 @@ app.get('/asignaciones', async (req, res) => {
     });
     res.json(asignaciones);
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+// Rutas para Mensajes
+app.post('/mensajes', async (req, res) => {
+  try {
+    const { Contenido, Remitente_id, Destinatario_id } = req.body;
+
+    const nuevoMensaje = await Mensaje.create({
+      Contenido,
+      Remitente_id,
+      Destinatario_id,
+    });
+
+    res.status(201).json(nuevoMensaje);
+  } catch (error) {
+    console.error('Error al enviar el mensaje:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/mensajes', async (req, res) => {
+  const { Remitente_id, Destinatario_id } = req.query;
+
+  try {
+    const mensajes = await Mensaje.findAll({
+      where: {
+        Remitente_id,
+        Destinatario_id,
+      },
+      include: [
+        { model: Usuario, as: 'Remitente' },
+        { model: Usuario, as: 'Destinatario' },
+      ],
+      order: [['FechaEnvio', 'ASC']],
+    });
+
+    res.json(mensajes);
+  } catch (error) {
+    console.error('Error al obtener los mensajes:', error);
     res.status(500).json({ error: error.message });
   }
 });
