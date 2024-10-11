@@ -21,7 +21,8 @@ app.use(express.json());
 
     // Mantenemos app.listen aquí
     app.listen(port, () => {
-      console.log(Aplicación escuchando en http://localhost:${port});
+      console.log('Aplicación escuchando en http://localhost:${port}');
+
     });
   } catch (error) {
     console.error('No se pudo conectar a la base de datos:', error);
